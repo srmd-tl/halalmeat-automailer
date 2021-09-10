@@ -56,7 +56,7 @@ function halalmeat_automailer_cron_callback() {
 //on init hoook
 add_action( 'init', 'on_halalmeat_automailer_init' );
 function on_halalmeat_automailer_init() {
-	if ( is_admin() ) {
+	if ( current_user_can('administrator') ) {
 		halalmeat_automailer_register_my_custom_menu_page();
 		if ( ! empty( $_GET ) && array_key_exists( 'page', $_GET ) && $_GET['page'] == 'halalmeat-automailer-settings' ) {
 			halalmeat_automailer_settings();
