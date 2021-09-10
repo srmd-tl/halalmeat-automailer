@@ -1,0 +1,106 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.pdf {
+  font-family: "Montserrat", sans-serif;
+  padding: 93px 0px 162px 0px;
+  width: 1347px;
+  margin: 0px auto;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.pdf__header::after,
+.pdf__description::after,
+.pdf__table_header::after,
+.pdf__table_body::after,
+.pdf__price::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.pdf__header {
+  margin-bottom: 104px;
+}
+.pdf__col_left {
+  float: left;
+  width: 503px;
+}
+.pdf__col_right {
+  float: right;
+  width: 531px;
+}
+.pdf img {
+  filter: brightness(0);
+  margin-left: 18px;
+}
+.pdf__col p,
+p.pdf__col {
+  font-size: 23px;
+}
+.pdf__heading.small {
+  font-size: 25px;
+}
+.pdf__heading.big {
+  margin-bottom: 55px;
+  font-size: 46px;
+  text-transform: uppercase;
+}
+.pdf__table {
+  margin-top: 80px;
+}
+.pdf__table_header {
+  color: white;
+  background-color: black;
+  padding: 10px;
+}
+.pdf__table_item {
+  float: left;
+  width: 198px;
+  margin-right: 20px;
+}
+.pdf__table_product {
+  float: left;
+  margin-right: 20px;
+}
+.pdf__table_amount {
+  float: right;
+  width: 198px;
+}
+.pdf__table .pdf__heading {
+  font-weight: 600;
+}
+.pdf__table_body {
+  font-size: 23px;
+}
+.pdf__table_product span {
+  font-size: 18px;
+}
+.pdf__table_body {
+  border-bottom: 2px solid #cdcdcd;
+  padding: 10px;
+}
+.pdf__price {
+  border-top: 2px solid #cdcdcd;
+  border-bottom: 2px solid #cdcdcd;
+  width: 534px;
+  margin: 100px 0 0 auto;
+  padding: 8px;
+}
+.pdf__price * {
+  font-size: 23px;
+}
+.pdf__price h3 {
+  float: left;
+}
+.pdf__price p {
+  float: right;
+}
+.pdf__footer {
+  margin-top: 200px;
+  border-top: 1px solid #cdcdcd;
+  text-align: center;
+  padding: 20px 40px 0px;
+  font-size: 23px;
+}
