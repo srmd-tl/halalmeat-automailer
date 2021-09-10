@@ -14,10 +14,11 @@ require_once BASE_PATH.'DbQuery.php';
 class Helper {
 	/**
 	 * @param int $days
+	 * @param string $type
 	 *
 	 * @return false|string
 	 */
-	public static function afterDate( int $days ) {
+	public static function afterDate( int $days,string $type ) {
 		$db = new DbQuery();
 		$settings= $db->getSetting();
 		$days    = sprintf( '%s %s', $days, 'Days' );
@@ -25,7 +26,17 @@ class Helper {
 		date_sub( $current, date_interval_create_from_date_string( $days ) );
 		if($settings&&key_exists('smtp_username',$settings))
 		{
-			return date_format( $current->setTime('14','00','00'), "Y-m-d H:i:s" );
+			$time = null;
+			if($type == 'pre_order')
+			{
+				$time=current($db->getSetting()['preorder_time']);
+			}
+			else if($type == 'order')
+			{
+				$time=current($db->getSetting()['order_time']);
+			}
+			$time = explode(':',$time);
+			return date_format( $current->setTime($time[0],$time[1],'00'), "Y-m-d H:i:s" );
 		}
 		else
 		{

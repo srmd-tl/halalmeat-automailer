@@ -43,7 +43,7 @@ class DbQuery {
 		if ( $post ) {
 			$butcherEmail   = get_post_meta( $post->ID, 'butcher_email' );
 			$logisticsEmail = get_post_meta( $post->ID, 'logistics_email' );
-			$preOrderTime   = get_post_meta( $post->ID, 'pre_order_time' );
+			$preOrderTime   = get_post_meta( $post->ID, 'preorder_time' );
 			$orderTime      = get_post_meta( $post->ID, 'order_time' );
 			$senderEmail    = get_post_meta( $post->ID, 'sender_email' );
 			$senderName     = get_post_meta( $post->ID, 'sender_name' );
@@ -53,11 +53,12 @@ class DbQuery {
 			$smtpHost     = get_post_meta( $post->ID, 'smtp_host' );
 			$smtpPort     = get_post_meta( $post->ID, 'smtp_port' );
 			$smtpSecurity = get_post_meta( $post->ID, 'smtp_security' );
+			$mode         = get_post_meta( $post->ID, 'test_mode' );
 
 			return [
-				'butcherEmail'   => $butcherEmail,
-				'logisticsEmail' => $logisticsEmail,
-				'pre_order_time' => $preOrderTime,
+				'butcher_email'   => $butcherEmail,
+				'logistics_email' => $logisticsEmail,
+				'preorder_time'  => $preOrderTime,
 				'order_time'     => $orderTime,
 
 				'sender_email' => $senderEmail,
@@ -67,7 +68,8 @@ class DbQuery {
 				'smtp_password' => $smtpPassword,
 				'smtp_host'     => $smtpHost,
 				'smtp_port'     => $smtpPort,
-				'smtp_security' => $smtpSecurity
+				'smtp_security' => $smtpSecurity,
+				'test_mode'     => $mode
 			];
 		}
 
@@ -151,9 +153,10 @@ class DbQuery {
 	/**
 	 * @param array $wooOrdersObjArray
 	 * @param array $orders
+	 * @param string $type
 	 */
-	public function getAllOrders( array &$wooOrdersObjArray, array &$orders ) {
-		$orderPosts = $this->getOrders();
+	public function getAllOrders( array &$wooOrdersObjArray, array &$orders, string $type ) {
+		$orderPosts = $this->getOrders( $type );
 		foreach ( $orderPosts as $orderPost ) {
 			$wooOrderObj         = wc_get_order( $orderPost->ID );
 			$wooOrdersObjArray[] = $wooOrderObj;
@@ -162,24 +165,33 @@ class DbQuery {
 	}
 
 	/**
+	 * @param string $type
+	 *
 	 * @return int[]|WP_Post[]
 	 */
-	public function getOrders() {
-		print_r( Helper::afterDate( 4 ) );
-		die();
+	public function getOrders( string $type ) {
+		$settings   = $this->getSetting();
+		$liveMode   = $settings && key_exists( 'test_mode', $settings ) && current( $settings['test_mode'] ) == null;
 		$currentDay = date( 'D' );
-		$args       = array(
-			'post_type'      => 'shop_order',
-			'posts_per_page' => '10',
-			'post_status'    => 'wc-completed',
-			'date_query'     => array(
-				'column' => 'post_modified',
-				'after'  => $currentDay == 'Tue' ? Helper::afterDate( 4 ) : Helper::afterDate( 3 ),
-				'before' => date( "Y-m-d" )
-			),
-		);
-		$query      = new WP_Query( $args );
-
+		if ( $liveMode ) {
+			$args = array(
+				'post_type'      => 'shop_order',
+				'posts_per_page' => '10',
+				'post_status'    => 'wc-completed',
+				'date_query'     => array(
+					'column' => 'post_modified',
+					'after'  => $currentDay == 'Tue' ? Helper::afterDate( 4, $type ) : Helper::afterDate( 3, $type ),
+					'before' => date( "Y-m-d" )
+				),
+			);
+		} else {
+			$args = array(
+				'post_type'      => 'shop_order',
+				'posts_per_page' => '10',
+				'post_status'    => 'wc-completed',
+			);
+		}
+		$query = new WP_Query( $args );
 		return $query->posts;
 	}
 
@@ -299,6 +311,7 @@ class DbQuery {
 	 * @param string $orderTime
 	 */
 	public function insertOrderTime( string $preOrderTime, string $orderTime ) {
+
 		// Gather post data.
 		$post      = array(
 			'post_title'   => 'dummy',
@@ -312,6 +325,21 @@ class DbQuery {
 		update_post_meta( $postId, 'preorder_time', sanitize_text_field( $preOrderTime ) );
 		update_post_meta( $postId, 'order_time', sanitize_text_field( $orderTime ) );
 
+	}
+
+	public function insertTestMode( $mode ) {
+
+		// Gather post data.
+		$post      = array(
+			'post_title'   => 'dummy',
+			'post_content' => 'dummy',
+			'post_author'  => 1,
+			'post_type'    => 'halalmeat_automailer'
+		);
+		$fountPost = post_exists( $post['post_title'], '', '', $post['post_type'] );
+		// Insert the post into the database.
+		$postId = $fountPost ?: wp_insert_post( $post );
+		update_post_meta( $postId, 'test_mode', $mode == 'not' ? null : sanitize_text_field( $mode ) );
 	}
 
 }

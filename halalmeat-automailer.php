@@ -75,10 +75,25 @@ function on_halalmeat_automailer_init() {
 function lets_do_magic() {
 	require_once( BASE_PATH . 'DbQuery.php' );
 	require_once( BASE_PATH . 'Helper.php' );
+	executeMainProcess('pre_order');
+
+	//send order details to logistics members
+//	$db->sendToLogistics( $orders );
+
+
+//	$data=apply_filters( 'wc_customer_order_export_xml_order_note', array(
+//    'Date'    => $order->get_date_created(),
+//    'Author'  => $order->get_user(),
+//    'Content' => str_replace( array( "\r", "\n" ), ' ', $order->get_customer_note()),
+//), $order->get_customer_note(), $order );
+
+}
+function executeMainProcess(string $type)
+{
 	$orders            = [];
 	$wooOrdersObjArray = [];
 	$db                = new DbQuery();
-	$db->getAllOrders( $wooOrdersObjArray, $orders );
+	$db->getAllOrders( $wooOrdersObjArray, $orders ,$type);
 	if ( $wooOrdersObjArray ) {
 		//Get orders array for butcher
 		$butcherOrders = $db->getOrderProductsForButcher( $wooOrdersObjArray );
@@ -103,20 +118,7 @@ function lets_do_magic() {
 		}
 
 	}
-
-
-	//send order details to logistics members
-//	$db->sendToLogistics( $orders );
-
-
-//	$data=apply_filters( 'wc_customer_order_export_xml_order_note', array(
-//    'Date'    => $order->get_date_created(),
-//    'Author'  => $order->get_user(),
-//    'Content' => str_replace( array( "\r", "\n" ), ' ', $order->get_customer_note()),
-//), $order->get_customer_note(), $order );
-
 }
-
 
 
 //// Get Order ID and Key

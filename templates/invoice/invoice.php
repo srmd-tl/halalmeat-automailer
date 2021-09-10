@@ -25,6 +25,9 @@ ob_start();
             padding: 0;
             box-sizing: border-box;
         }
+        @page {
+            margin-top: 30px !important;
+        }
         .pdf {
             font-family: "Montserrat", sans-serif;
             padding: 40px 0px 162px 0px;

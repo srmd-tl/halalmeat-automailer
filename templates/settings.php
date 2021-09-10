@@ -31,8 +31,14 @@ if ( ! empty( $_POST )
 
 	$db->insertOrderTime( $_POST['preorder_time'], $_POST['order_time'] );
 }
+//test mode configs
+if ( ! empty( $_POST ) ) {
+
+	$db->insertTestMode( $_POST['test_mode']??'not');
+}
 
 $data = $db->getSetting();
+
 ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -53,12 +59,12 @@ $data = $db->getSetting();
             <div class="form-group">
                 <label for="email">Butcher:</label>
                 <input type="email" class="form-control" id="butcher_email" placeholder="Enter butcher email"
-                       name="butcher_email" value="<?= $data ? current( $data['butcherEmail'] ) : null ?>">
+                       name="butcher_email" value="<?= $data ? current( $data['butcher_email'] ) : null ?>">
             </div>
             <div class="form-group">
                 <label for="pwd">Logistics:</label>
                 <input type="email" class="form-control" id="logistics_email" placeholder="Enter logistics email"
-                       name="logistics_email" value="<?= $data ? current( $data['logisticsEmail'] ) : null ?>">
+                       name="logistics_email" value="<?= $data ? current( $data['logistics_email'] ) : null ?>">
             </div>
             <!--Sender info-->
             <div class="form-group">
@@ -114,7 +120,7 @@ $data = $db->getSetting();
             <div class="form-group">
                 <label for="pwd">Pre Order schedule:</label>
                 <input type="time" class="form-control" id="pre_order_time" placeholder="Enter pre order time"
-                       name="pre_order_time"
+                       name="preorder_time"
                        value="<?= $data && key_exists( 'preorder_time', $data ) ? current( $data['preorder_time'] ) : null ?>">
             </div>
             <div class="form-group">
@@ -122,6 +128,13 @@ $data = $db->getSetting();
                 <input type="time" class="form-control" id="order_time" placeholder="Enter order time"
                        name="order_time"
                        value="<?= $data && key_exists( 'order_time', $data ) ? current( $data['order_time'] ) : null ?>">
+            </div>
+
+            <div class="form-group">
+                <label for="pwd">Test mode:</label>
+                <input type="checkbox" class="form-control" id="test_mode"
+                       name="test_mode" value="checked"
+                      <?= $data && key_exists( 'test_mode', $data )&&current($data['test_mode'])=='checked' ? 'checked' : null ?>>
             </div>
             <button type="submit" class="btn btn-default">Submit</button>
         </form>
