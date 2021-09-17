@@ -60,10 +60,16 @@ ob_start();
             float: right;
             width: 300px;
         }
+        .pdf__col_right p,
+         p.pdf__col_left,
+        p.pdf__col_right{
+            line-height:1;
+            margin: 0px 0px !important;
+        }
         .pdf img {
             filter: brightness(0);
-            margin-left: 18px;
-            width: 25%;
+            margin-left: -18px;
+            width: 30%;
         }
         .pdf__col p,
         p.pdf__col {
@@ -147,20 +153,18 @@ ob_start();
 	foreach($wooOrdersObjArray as $singleOrder)
 	{
 		$i++
-
-?>
+    ?>
         <div class="pdf <?php if($i > 1){echo "neechyaja"; } ?>">
             <div class="pdf__header">
                 <img class="pdf__col pdf__col_left" src="<?=$pathToLogo;?>" alt="Logo">
 
                 <div class="pdf__col pdf__col_right">
                     <h3 class="pdf__heading small">Halal Meat Express</h3>
-                    <p>
-                        Klantenservice@halalmeatexpress.nl <br>
-                        Ingelandenweg 1 <br>
-                        1069 WE Amsterdam <br>
-                        KVK 83679316
-                    </p>
+                    <p>Ingelandenweg 1 <br>
+                    1069 WE Amsterdam<br>
+                    KVK: 83679316<br>
+                    BTW: 862955762B01<br>
+                    Klantenservice@halalmeatexpress.nl</p>
                 </div>
             </div>
 
@@ -168,15 +172,21 @@ ob_start();
 
             <div class="pdf__description">
                 <p class="pdf__col pdf__col_left">
+<!--                    Sarmad Sohail<br>-->
+<!--                    House no 317 Street Iqbal Hotel<br>-->
+<!--                    46000<br>-->
+<!--                    Rawalpindi <br>-->
+<!--                    031252213123-->
 					<?=$singleOrder->get_billing_first_name() . ' ' . $singleOrder->get_billing_last_name();?> <br>
-					<?=$singleOrder->get_shipping_address_2()?> <br>
-					<?=$singleOrder->get_shipping_address_1()?> <br>
-					<?=$singleOrder->get_billing_phone()?>
+	                <?=$singleOrder->get_shipping_address_2() . ' ' . $singleOrder->get_shipping_address_1();?> <br>
+	                <?=$singleOrder->get_shipping_postcode()?> <br>
+                    <?=$singleOrder->get_shipping_city()?> <br>
+                    <?=$singleOrder->get_shipping_phone()?>
                 </p>
                 <p class="pdf__col pdf__col_right">
-                    Bestelnummer: <?=$singleOrder->get_billing_phone()?> <br>
-                    Besteldatum: <?=$singleOrder->get_billing_phone()?> <br>
-                    Verzendmethode: <?=$singleOrder->get_shipping_method()?> <br>
+                    Bestelnummer: <?=$singleOrder->get_order_number()?> <br>
+                    Besteldatum: <?=$singleOrder->get_date_created()->date('Y-m-d')?> <br>
+
                 </p>
             </div>
 
@@ -193,13 +203,11 @@ ob_start();
 					?>
                     <div class="pdf__table_body">
                         <div class="pdf__table_item">
-							<?=$item->get_name()?> <br>
-                            500 Gram
+	                        <?=$item->get_product_id()?><br>
+
                         </div>
                         <div class="pdf__table_product">
-							<?=$item->get_name()?> <br>
-                            500 gram <br>
-                            <span>SKU:  <?=$item->get_product_id()?></span>
+	                        <?=$item->get_name()?> <br>
                         </div>
                         <div class="pdf__table_amount">
 							<?=$item->get_quantity();?>
@@ -214,13 +222,12 @@ ob_start();
                 <p><?=$item->get_total()?></p>
             </div>
             <div class="pdf__footer">
-                Op alle overeenkomsten tussen u en Halalkoe B.V. zijn de algemene voorwaarden van Halalkoe B.V van toepassing, zie www.halalkoe.nl/algemene-voorwaarden
+                Op alle overeenkomsten tussen u en Halal Meat Express B.V. zijn de algemene voorwaarden van toepassing, zie www.halalmeatexpress.nl/algemene-voorwaarden.
             </div>
         </div>
 		<?php
 }
 	?>
-    ?>
     </body>
     </html>
 <?php

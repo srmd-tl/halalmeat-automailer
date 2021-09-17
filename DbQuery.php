@@ -58,8 +58,8 @@ class DbQuery {
 			return [
 				'butcher_email'   => $butcherEmail,
 				'logistics_email' => $logisticsEmail,
-				'preorder_time'  => $preOrderTime,
-				'order_time'     => $orderTime,
+				'preorder_time'   => $preOrderTime,
+				'order_time'      => $orderTime,
 
 				'sender_email' => $senderEmail,
 				'sender_name'  => $senderName,
@@ -170,28 +170,32 @@ class DbQuery {
 	 * @return int[]|WP_Post[]
 	 */
 	public function getOrders( string $type ) {
-		$settings   = $this->getSetting();
-		$liveMode   = $settings && key_exists( 'test_mode', $settings ) && current( $settings['test_mode'] ) == null;
-		$currentDay = date( 'D' );
-		if ( $liveMode ) {
+		$settings = $this->getSetting();
+		$liveMode = $settings && key_exists( 'test_mode', $settings ) && current( $settings['test_mode'] ) == null;
+		if ( $liveMode && in_array( strtolower( Helper::getCurrentDay() ), [ 'fri', 'tue' ] ) ) {
 			$args = array(
 				'post_type'      => 'shop_order',
 				'posts_per_page' => '10',
-				'post_status'    => 'wc-completed',
+				'post_status'    => 'wc-processing',
 				'date_query'     => array(
 					'column' => 'post_modified',
-					'after'  => $currentDay == 'Tue' ? Helper::afterDate( 4, $type ) : Helper::afterDate( 3, $type ),
+					'after'  => Helper::getCurrentDay() == 'Tue'
+						? Helper::afterDate( 4, $type )
+						: Helper::afterDate( 3, $type ),
 					'before' => date( "Y-m-d" )
 				),
 			);
+
 		} else {
+			echo 'testing things';
 			$args = array(
 				'post_type'      => 'shop_order',
 				'posts_per_page' => '10',
-				'post_status'    => 'wc-completed',
+				'post_status'    => 'wc-processing',
 			);
 		}
 		$query = new WP_Query( $args );
+
 		return $query->posts;
 	}
 

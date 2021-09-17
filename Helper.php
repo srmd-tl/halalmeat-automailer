@@ -12,6 +12,18 @@ require_once BASE_PATH.'DbQuery.php';
  *
  */
 class Helper {
+	public static function getCurrentTime()
+	{
+		return  date('H:i:s');
+	}
+	public static function getCurrentDate()
+	{
+		return  date('Y-m-d');
+	}
+	public static function getCurrentDay()
+	{
+		return  date('D');
+	}
 	/**
 	 * @param int $days
 	 * @param string $type

@@ -14,9 +14,11 @@ ob_start();
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>card</title>
+      <title>card</title>
   </head>
     <style>
         * {
@@ -24,11 +26,11 @@ ob_start();
             padding: 0 !important;
             box-sizing: border-box !important;
         }
-        html {
-            font-family: "bree serif" !important;
+        *, .card {
+            font-family: "Montserrat", sans-serif;
         }
         .card {
-            width: 520px !important;
+            width: 320px !important;
             border: 1px solid #000 !important;
             padding: 28px 22px 28px 22px !important;
             margin: 25px auto !important;
@@ -44,11 +46,13 @@ ob_start();
         }
         .card h2 {
             font-weight: 700 !important;
+            line-height:1;
         }
         .card span {
             display: block !important;
             font-weight: 500 !important;
-            font-size: 18px !important;
+            font-size: 15px !important;
+            line-height:1;
         }
         .card .logo img {
             padding-top: 10px !important;

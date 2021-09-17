@@ -89,5 +89,8 @@ return array (
     '800' => $fontDir . '/montserrat_800_7dae4e1d2bad33a3b8aea6c491301e79',
     '900' => $fontDir . '/montserrat_900_26c73bf413077f1e1c9ac208c446dedf',
   ),
+  'bree serif' => array(
+    'normal' => $fontDir . '/bree_serif_normal_e123bb49dd6018593df4ee67859ba76a',
+  ),
 );
 }; ?>
