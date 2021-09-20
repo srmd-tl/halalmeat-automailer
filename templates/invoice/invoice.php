@@ -199,11 +199,11 @@ ob_start();
 				<?php
 				foreach($singleOrder->get_items() as $item_id => $item )
 				{
-
+					$product = $item->get_product();
 					?>
                     <div class="pdf__table_body">
                         <div class="pdf__table_item">
-	                        <?=$item->get_product_id()?><br>
+	                        <?=$product->get_sku()?><br>
 
                         </div>
                         <div class="pdf__table_product">
@@ -219,7 +219,7 @@ ob_start();
             </div>
             <div class="pdf__price">
                 <h3>Totaal aantal</h3>
-                <p><?=$item->get_total()?></p>
+                <p><?=$singleOrder->get_total()?></p>
             </div>
             <div class="pdf__footer">
                 Op alle overeenkomsten tussen u en Halal Meat Express B.V. zijn de algemene voorwaarden van toepassing, zie www.halalmeatexpress.nl/algemene-voorwaarden.

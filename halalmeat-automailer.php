@@ -75,8 +75,13 @@ function on_halalmeat_automailer_init() {
 			$db = new DbQuery();
 			if ( in_array( strtolower( Helper::getCurrentDay() ), [ 'fri', 'tue' ] ) ) {
 				 lets_do_magic();
+				echo "Job done";
 			}
-			echo "Job done";
+			else
+			{
+				echo "You can only send email on tuesday and friday";
+			}
+
 			die();
 		}
 
@@ -137,7 +142,7 @@ function executeMainProcess( string $type ) {
 			//Generate Pdf for butcher
 			Helper::generatePdf( $html, 'butcher' );
 			//Send mail to butcher
-			$db->sendToButcher( $butcherOrders );
+//			$db->sendToButcher( $butcherOrders );
 		}
 		//generate dynamic html string for logistic order
 		$html = require_once( BASE_PATH . 'templates/invoice/invoice.php' );
