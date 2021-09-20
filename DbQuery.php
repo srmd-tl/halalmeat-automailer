@@ -5,6 +5,13 @@ require_once( BASE_PATH . 'Helper.php' );
  *
  */
 class DbQuery {
+	public function markComplete( array $ordersObj ) {
+		foreach ( $ordersObj as $order ) {
+			$order->update_status( 'completed' );
+		}
+		die();
+	}
+
 	/**
 	 * @param array $orders
 	 */
@@ -179,12 +186,14 @@ class DbQuery {
 				'post_status'    => 'wc-processing',
 				'date_query'     => array(
 					'column' => 'post_modified',
-					'after'  => Helper::getCurrentDay() == 'Tue'
-						? Helper::afterDate( 4, $type )
-						: Helper::afterDate( 3, $type ),
 					'before' => date( "Y-m-d" )
 				),
 			);
+			if ( Helper::getCurrentDay() == 'Tue' ) {
+				$args['after'] = Helper::afterDate( 4, $type );
+			} else if ( Helper::getCurrentDay() == 'Fri' ) {
+				$args['after'] = Helper::afterDate( 3, $type );
+			}
 
 		} else {
 			echo 'testing things';

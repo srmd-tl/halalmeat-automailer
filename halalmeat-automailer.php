@@ -3,6 +3,8 @@ ini_set( 'display_errors', 1 );
 ini_set( 'display_startup_errors', 1 );
 error_reporting( E_ALL );
 date_default_timezone_set( "Europe/Amsterdam" );
+//date_default_timezone_set( "Asia/Karachi" );
+
 /**
  * Plugin Name
  *
@@ -39,32 +41,26 @@ function halalmeat_automailer_register_my_custom_menu_page() {
 	add_submenu_page( 'halalmeat-automailer-tester', 'Settings', 'Settings',
 		'manage_options', 'admin?page=halalmeat-automailer-settings' );
 	add_submenu_page( 'halalmeat-automailer-tester', 'Send Mail', 'Send Mail',
-		'manage_options', 'admin?page=halalmeat-automailer-manual-email' );
+		'manage_options', 'admin.php?page=halalmeat-automailer-manual-email' );
 }
-add_action('custom_checks','customChecks');
-function customChecks()
-{
-	if(!empty($_GET)&&key_exists('action',$_GET)&&$_GET['action']=='send_manual_mail')
-	{
-		lets_do_magic();
-	}
-}
-//custom get query string filters
-do_action('custom_checks');
+
 //halalmeat-automailer_test_mail to test mail
 function halalmeat_automailer_test_mail() {
 	lets_do_magic();
 }
+
 //halalmeat_automailer_settings
 function halalmeat_automailer_settings() {
 	require_once BASE_PATH . '/templates/settings.php';
 	die();
 }
+
 //crontrol hooks
 add_action( 'halalmeat_automailer_new_cron', 'halalmeat_automailer_cron_callback' );
 function halalmeat_automailer_cron_callback() {
 	lets_do_magic();
 }
+
 //on init hoook
 add_action( 'init', 'on_halalmeat_automailer_init' );
 function on_halalmeat_automailer_init() {
@@ -73,9 +69,15 @@ function on_halalmeat_automailer_init() {
 		if ( ! empty( $_GET ) && array_key_exists( 'page', $_GET ) && $_GET['page'] == 'halalmeat-automailer-settings' ) {
 			halalmeat_automailer_settings();
 		}
-		if( ! empty( $_GET ) && array_key_exists( 'page', $_GET ) && $_GET['page'] == 'halalmeat-automailer-manual-email')
-		{
-
+		if ( ! empty( $_GET ) && array_key_exists( 'page', $_GET ) && $_GET['page'] == 'halalmeat-automailer-manual-email' ) {
+			require_once BASE_PATH . 'Helper.php';
+			require_once BASE_PATH . 'DbQuery.php';
+			$db = new DbQuery();
+			if ( in_array( strtolower( Helper::getCurrentDay() ), [ 'fri', 'tue' ] ) ) {
+				 lets_do_magic();
+			}
+			echo "Job done";
+			die();
 		}
 
 		if ( is_plugin_active( 'wp-crontrol/wp-crontrol.php' ) ) {
@@ -87,20 +89,33 @@ function on_halalmeat_automailer_init() {
 			}
 		}
 	}
-
 }
+
 //Our main function to perform auto mailing and all the dependant stuff
 function lets_do_magic() {
 	require_once( BASE_PATH . 'DbQuery.php' );
 	require_once( BASE_PATH . 'Helper.php' );
 	$db = new DbQuery();
-	if(current($db->getSetting()['test_mode']))
-	{
+	if ( current( $db->getSetting()['test_mode'] ) ) {
 		executeMainProcess( 'pre_order' );
-	}
-	else
-	{
-		executeMainProcess( 'order' );
+	} else {
+		$currentTime =strtotime(Helper::getCurrentTime()) ;
+
+		if (
+			( $currentTime > strtotime(current( $db->getSetting()['preorder_time'] ).':00' ))
+			&& $currentTime < strtotime(current( $db->getSetting()['order_time'] ).':00' )) {
+			echo "pre time";
+			executeMainProcess( 'pre_order' );
+		} else if ( ( $currentTime < strtotime(current( $db->getSetting()['preorder_time'] ).':00' ))
+			        && $currentTime > strtotime(current( $db->getSetting()['order_time'] ).':00' )) {
+			echo "post time";
+			$mainProcessOrders=executeMainProcess( 'order' );
+			if($mainProcessOrders)
+			{
+				$db->markComplete();
+			}
+		}
+
 	}
 
 	//send order details to logistics members
@@ -129,11 +144,11 @@ function executeMainProcess( string $type ) {
 		echo $html;
 		//Generate Pdf for butcher
 		Helper::generatePdf( $html, 'logistics' );
-//		if ( $orders ) {
-		//Send mail to logistics
-//			$db->sendToLogistics( $orders );
-//		}
-
+		if($type=='order')
+		{
+			$db->sendToLogistics( $orders );
+		}
+		return $wooOrdersObjArray;
 	}
 }
 
@@ -161,6 +176,7 @@ function add_custom_order_status_actions_button( $actions, $order ) {
 			);
 		}
 	}
+
 	return $actions;
 }
 
