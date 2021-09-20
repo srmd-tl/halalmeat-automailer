@@ -2,8 +2,8 @@
 ini_set( 'display_errors', 1 );
 ini_set( 'display_startup_errors', 1 );
 error_reporting( E_ALL );
-date_default_timezone_set( "Europe/Amsterdam" );
-//date_default_timezone_set( "Asia/Karachi" );
+//date_default_timezone_set( "Europe/Amsterdam" );
+date_default_timezone_set( "Asia/Karachi" );
 
 /**
  * Plugin Name
@@ -73,7 +73,7 @@ function on_halalmeat_automailer_init() {
 			require_once BASE_PATH . 'Helper.php';
 			require_once BASE_PATH . 'DbQuery.php';
 			$db = new DbQuery();
-			if ( in_array( strtolower( Helper::getCurrentDay() ), [ 'fri', 'tue' ] ) ) {
+			if ( in_array( strtolower( Helper::getCurrentDay() ), [ 'mon', 'tue' ] ) ) {
 				 lets_do_magic();
 				echo "Job done";
 			}
@@ -105,19 +105,19 @@ function lets_do_magic() {
 		executeMainProcess( 'order' );
 	} else {
 		$currentTime =strtotime(Helper::getCurrentTime()) ;
-
+		var_dump($currentTime);
+		var_dump(( strtotime(current( $db->getSetting()['preorder_time'] ).':00' )));
 		if (
 			( $currentTime > strtotime(current( $db->getSetting()['preorder_time'] ).':00' ))
 			&& $currentTime < strtotime(current( $db->getSetting()['order_time'] ).':00' )) {
 			echo "pre time";
 			executeMainProcess( 'pre_order' );
-		} else if ( ( $currentTime < strtotime(current( $db->getSetting()['preorder_time'] ).':00' ))
-			        && $currentTime > strtotime(current( $db->getSetting()['order_time'] ).':00' )) {
+		} else if (  $currentTime > strtotime(current( $db->getSetting()['order_time'] ).':00' )) {
 			echo "post time";
 			$mainProcessOrders=executeMainProcess( 'order' );
 			if($mainProcessOrders)
 			{
-				$db->markComplete();
+				$db->markComplete($mainProcessOrders);
 			}
 		}
 

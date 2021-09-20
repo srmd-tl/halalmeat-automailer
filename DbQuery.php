@@ -190,7 +190,7 @@ class DbQuery {
 					'before' => date( "Y-m-d" )
 				),
 			);
-			if ( Helper::getCurrentDay() == 'Tue' ) {
+			if ( Helper::getCurrentDay() == 'Mon' ) {
 				$args['after'] = Helper::afterDate( 4, $type );
 			} else if ( Helper::getCurrentDay() == 'Fri' ) {
 				$args['after'] = Helper::afterDate( 3, $type );
