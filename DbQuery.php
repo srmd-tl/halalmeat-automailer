@@ -131,10 +131,11 @@ class DbQuery {
 		$data = [];
 		foreach ( $orders as $order ) {
 			foreach ( $order->get_items() as $item_id => $item ) {
+
 				if ( array_key_exists( $item->get_name(), $data ) ) {
-					$data[ $item->get_name() ] = [ $item->get_name(), ( (int) $data[ $item->get_name() ] ) + 1 ];
+					$data[ $item->get_name() ] = [ $item->get_name(), ( (int) $data[ $item->get_name() ][1] ) +  $item->get_quantity() ];
 				} else {
-					$data[ $item->get_name() ] = [ $item->get_name(), 1 ];
+					$data[ $item->get_name() ] = [ $item->get_name(), $item->get_quantity() ];
 				}
 //				$product_id   = $item->get_product_id();
 //				$variation_id = $item->get_variation_id();

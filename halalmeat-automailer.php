@@ -102,7 +102,7 @@ function lets_do_magic() {
 	require_once( BASE_PATH . 'Helper.php' );
 	$db = new DbQuery();
 	if ( current( $db->getSetting()['test_mode'] ) ) {
-		executeMainProcess( 'pre_order' );
+		executeMainProcess( 'order' );
 	} else {
 		$currentTime =strtotime(Helper::getCurrentTime()) ;
 
@@ -138,11 +138,10 @@ function executeMainProcess( string $type ) {
 		if ( $butcherOrders ) {
 			//generate dynamic html string for butcher order
 			$html = require_once( BASE_PATH . 'templates/card/bussniesscard.php' );
-			echo $html;
 			//Generate Pdf for butcher
 			Helper::generatePdf( $html, 'butcher' );
 			//Send mail to butcher
-//			$db->sendToButcher( $butcherOrders );
+			$db->sendToButcher( $butcherOrders );
 		}
 		//generate dynamic html string for logistic order
 		$html = require_once( BASE_PATH . 'templates/invoice/invoice.php' );
