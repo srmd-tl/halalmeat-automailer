@@ -138,6 +138,7 @@ function executeMainProcess( string $type ) {
 		if ( $butcherOrders ) {
 			//generate dynamic html string for butcher order
 			$html = require_once( BASE_PATH . 'templates/card/bussniesscard.php' );
+			echo $html;
 			//Generate Pdf for butcher
 			Helper::generatePdf( $html, 'butcher' );
 			//Send mail to butcher
