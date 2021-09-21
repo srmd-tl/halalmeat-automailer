@@ -15,7 +15,7 @@ class DbQuery {
 	/**
 	 * @param array $orders
 	 */
-	public function sendToLogistics( array $orders ) {
+	public function sendToLogistics( array $orders,string $orderType ) {
 		$settings = $this->getSetting();
 		//for logistics
 		$fileHeader = array(
@@ -38,7 +38,7 @@ class DbQuery {
 		//Send attachment
 		Helper::sendMail(
 			$settings && key_exists( 'logistics_email', $settings ) ? current( $settings['logistics_email'] ) : 'sarmadking@gmail.com',
-			'Logistics', 'logistics' );
+			'Logistics', 'logistics',$orderType );
 	}
 
 	/**
@@ -107,7 +107,7 @@ class DbQuery {
 	/**
 	 * @param array $orders
 	 */
-	public function sendToButcher( array $orders ) {
+	public function sendToButcher( array $orders,string $orderType ) {
 		$settings = $this->getSetting();
 		//for butcher
 		$fileHeader = array(
@@ -119,7 +119,7 @@ class DbQuery {
 		//Send attachment
 		Helper::sendMail(
 			$settings && key_exists( 'butcher_email', $settings ) ? current( $settings['butcher_email'] ) : 'sarmadking@gmail.com'
-			, 'ROCKY', 'butcher' );
+			, 'ROCKY', 'butcher' ,$orderType);
 	}
 
 	/**
@@ -187,13 +187,13 @@ class DbQuery {
 				'post_status'    => 'wc-processing',
 				'date_query'     => array(
 					'column' => 'post_modified',
-					'before' => date( "Y-m-d" )
+					'before' => date( "Y-m-d H:i:s" )
 				),
 			);
-			if ( Helper::getCurrentDay() == 'Mon' ) {
-				$args['after'] = Helper::afterDate( 4, $type );
+			if ( Helper::getCurrentDay() == 'Tue' ) {
+				$args['date_query']['after'] = Helper::afterDate( 4, $type );
 			} else if ( Helper::getCurrentDay() == 'Fri' ) {
-				$args['after'] = Helper::afterDate( 3, $type );
+				$args['date_query']['after'] = Helper::afterDate( 3, $type );
 			}
 
 		} else {
@@ -205,7 +205,6 @@ class DbQuery {
 			);
 		}
 		$query = new WP_Query( $args );
-
 		return $query->posts;
 	}
 

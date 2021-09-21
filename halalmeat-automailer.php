@@ -1,4 +1,7 @@
 <?php
+// Start new or resume existing session.
+session_start();
+
 ini_set( 'display_errors', 1 );
 ini_set( 'display_startup_errors', 1 );
 error_reporting( E_ALL );
@@ -73,7 +76,7 @@ function on_halalmeat_automailer_init() {
 			require_once BASE_PATH . 'Helper.php';
 			require_once BASE_PATH . 'DbQuery.php';
 			$db = new DbQuery();
-			if ( in_array( strtolower( Helper::getCurrentDay() ), [ 'mon', 'tue' ] ) ) {
+			if ( in_array( strtolower( Helper::getCurrentDay() ), [ 'fri', 'tue' ] ) ) {
 				 lets_do_magic();
 				echo "Job done";
 			}
@@ -102,7 +105,7 @@ function lets_do_magic() {
 	require_once( BASE_PATH . 'Helper.php' );
 	$db = new DbQuery();
 	if ( current( $db->getSetting()['test_mode'] ) ) {
-		executeMainProcess( 'order' );
+		executeMainProcess( 'pre_order' );
 	} else {
 		$currentTime =strtotime(Helper::getCurrentTime()) ;
 		var_dump($currentTime);
@@ -111,7 +114,11 @@ function lets_do_magic() {
 			( $currentTime > strtotime(current( $db->getSetting()['preorder_time'] ).':00' ))
 			&& $currentTime < strtotime(current( $db->getSetting()['order_time'] ).':00' )) {
 			echo "pre time";
-			executeMainProcess( 'pre_order' );
+			if(!key_exists('pretime',$_SESSION)||$_SESSION['pretime']!=Helper::getCurrentDate())
+			{
+				executeMainProcess( 'pre_order' );
+				$_SESSION['pretime'] = Helper::getCurrentDate(); // string
+			}
 		} else if (  $currentTime > strtotime(current( $db->getSetting()['order_time'] ).':00' )) {
 			echo "post time";
 			$mainProcessOrders=executeMainProcess( 'order' );
@@ -128,6 +135,7 @@ function lets_do_magic() {
 }
 
 function executeMainProcess( string $type ) {
+
 	$orders            = [];
 	$wooOrdersObjArray = [];
 	$db                = new DbQuery();
@@ -142,7 +150,7 @@ function executeMainProcess( string $type ) {
 			//Generate Pdf for butcher
 			Helper::generatePdf( $html, 'butcher' );
 			//Send mail to butcher
-			$db->sendToButcher( $butcherOrders );
+			$db->sendToButcher( $butcherOrders,$type );
 		}
 		//generate dynamic html string for logistic order
 		$html = require_once( BASE_PATH . 'templates/invoice/invoice.php' );
@@ -151,7 +159,7 @@ function executeMainProcess( string $type ) {
 		Helper::generatePdf( $html, 'logistics' );
 		if($type=='order')
 		{
-			$db->sendToLogistics( $orders );
+			$db->sendToLogistics( $orders ,$type);
 		}
 		return $wooOrdersObjArray;
 	}

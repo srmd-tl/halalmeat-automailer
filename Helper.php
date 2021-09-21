@@ -87,7 +87,7 @@ class Helper {
 	 *
 	 * @throws Exception
 	 */
-	public static function sendMail( string $emailTo, string $emailToName, string $type ) {
+	public static function sendMail( string $emailTo, string $emailToName, string $type,string $orderType ) {
 		$db=new DbQuery();
 		$settings=$db->getSetting();
 		$smtpUsername = $settings&&key_exists('smtp_username',$settings)?current($settings['smtp_username']):"esookhlinknbit@gmail.com";
@@ -109,13 +109,22 @@ class Helper {
 		$mail->Subject = 'Order details';
 		$mail->msgHTML( "Order details" ); //$mail->msgHTML(file_get_contents('contents.html'), __DIR__); //Read an HTML message body from an external file, convert referenced images to embedded,
 		$mail->AltBody = 'HTML messaging not supported';
-		if ( strtolower( $type == 'logistics' ) ) {
-			$mail->addAttachment( BASE_PATH . 'logistics.csv' ); //csv file
-		} else if ( strtolower( $type == 'butcher' ) ) {
+		if($orderType=='pre_order')
+		{
 			$mail->addAttachment( BASE_PATH . 'order_details.csv' ); //csv file
-			$mail->addAttachment( BASE_PATH . 'labels.pdf' );//pdf file
-			$mail->addAttachment( BASE_PATH . 'slips.pdf' );//pdf file
 		}
+		else if($orderType=='order')
+		{
+			if ( strtolower( $type == 'logistics' ) ) {
+				$mail->addAttachment( BASE_PATH . 'logistics.csv' ); //csv file
+			} else if ( strtolower( $type == 'butcher' ) ) {
+				$mail->addAttachment( BASE_PATH . 'order_details.csv' ); //csv file
+				$mail->addAttachment( BASE_PATH . 'labels.pdf' );//pdf file
+				$mail->addAttachment( BASE_PATH . 'slips.pdf' );//pdf file
+			}
+		}
+
+
 		if ( ! $mail->send() ) {
 			echo "Mailer Error: " . $mail->ErrorInfo;
 		} else {

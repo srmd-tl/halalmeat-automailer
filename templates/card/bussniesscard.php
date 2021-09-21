@@ -106,7 +106,9 @@ ob_start();
                 <div class="text-box">
                     <h2><?=$singleOrder['billing_fullname'];?></h2>
                     <span><?=$singleOrder['billing_address_1'];?></span>
-                    <span><?=$singleOrder['billing_address_2'];?></span>
+                    <span><?=$singleOrder['billing_postcode'];?></span>
+                    <span><?=$singleOrder['billing_city'];?></span>
+
                 </div>
 
                 <div class="logo">
