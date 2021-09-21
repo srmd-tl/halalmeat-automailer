@@ -177,8 +177,9 @@ ob_start();
 <!--                    46000<br>-->
 <!--                    Rawalpindi <br>-->
 <!--                    031252213123-->
+
 					<?=$singleOrder->get_billing_first_name() . ' ' . $singleOrder->get_billing_last_name();?> <br>
-	                <?=$singleOrder->get_shipping_address_2() . ' ' . $singleOrder->get_shipping_address_1();?> <br>
+	                <?=$singleOrder->get_shipping_address_1() . ' ' . $singleOrder->get_shipping_address_2();?> <br>
 	                <?=$singleOrder->get_shipping_postcode()?> <br>
                     <?=$singleOrder->get_shipping_city()?> <br>
                     <?=$singleOrder->get_shipping_phone()?>

@@ -183,7 +183,7 @@ class DbQuery {
 		if ( $liveMode && in_array( strtolower( Helper::getCurrentDay() ), [ 'fri', 'tue' ] ) ) {
 			$args = array(
 				'post_type'      => 'shop_order',
-				'posts_per_page' => '10',
+				'posts_per_page' => '10000',
 				'post_status'    => 'wc-processing',
 				'date_query'     => array(
 					'column' => 'post_modified',

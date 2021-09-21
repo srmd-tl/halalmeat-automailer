@@ -5,8 +5,8 @@ session_start();
 ini_set( 'display_errors', 1 );
 ini_set( 'display_startup_errors', 1 );
 error_reporting( E_ALL );
-//date_default_timezone_set( "Europe/Amsterdam" );
-date_default_timezone_set( "Asia/Karachi" );
+date_default_timezone_set( "Europe/Amsterdam" );
+//date_default_timezone_set( "Asia/Karachi" );
 
 /**
  * Plugin Name
@@ -77,14 +77,11 @@ function on_halalmeat_automailer_init() {
 			require_once BASE_PATH . 'DbQuery.php';
 			$db = new DbQuery();
 			if ( in_array( strtolower( Helper::getCurrentDay() ), [ 'fri', 'tue' ] ) ) {
-				 lets_do_magic();
+				lets_do_magic();
 				echo "Job done";
-			}
-			else
-			{
+			} else {
 				echo "You can only send email on tuesday and friday";
 			}
-
 			die();
 		}
 
@@ -107,24 +104,28 @@ function lets_do_magic() {
 	if ( current( $db->getSetting()['test_mode'] ) ) {
 		executeMainProcess( 'pre_order' );
 	} else {
-		$currentTime =strtotime(Helper::getCurrentTime()) ;
-		var_dump($currentTime);
-		var_dump(( strtotime(current( $db->getSetting()['preorder_time'] ).':00' )));
+		$currentTime = strtotime( Helper::getCurrentTime() );
+		var_dump( $currentTime );
+		var_dump( ( strtotime( current( $db->getSetting()['preorder_time'] ) . ':00' ) ) );
 		if (
-			( $currentTime > strtotime(current( $db->getSetting()['preorder_time'] ).':00' ))
-			&& $currentTime < strtotime(current( $db->getSetting()['order_time'] ).':00' )) {
+			( $currentTime > strtotime( current( $db->getSetting()['preorder_time'] ) . ':00' ) )
+			&& $currentTime < strtotime( current( $db->getSetting()['order_time'] ) . ':00' ) ) {
+//			$new_post = array(
+//				'post_title'  => 'Draft title',
+//				'post_status' => 'draft',
+//				'post_type'   => 'hm_automailer'
+//			);
+//			$postId   = wp_insert_post( $new_post );
 			echo "pre time";
-			if(!key_exists('pretime',$_SESSION)||$_SESSION['pretime']!=Helper::getCurrentDate())
-			{
+			if ( ! key_exists( 'pretime', $_SESSION ) || $_SESSION['pretime'] != Helper::getCurrentDate() ) {
 				executeMainProcess( 'pre_order' );
 				$_SESSION['pretime'] = Helper::getCurrentDate(); // string
 			}
-		} else if (  $currentTime > strtotime(current( $db->getSetting()['order_time'] ).':00' )) {
+		} else if ( $currentTime > strtotime( current( $db->getSetting()['order_time'] ) . ':00' ) ) {
 			echo "post time";
-			$mainProcessOrders=executeMainProcess( 'order' );
-			if($mainProcessOrders)
-			{
-				$db->markComplete($mainProcessOrders);
+			$mainProcessOrders = executeMainProcess( 'order' );
+			if ( $mainProcessOrders ) {
+				$db->markComplete( $mainProcessOrders );
 			}
 		}
 
@@ -149,18 +150,19 @@ function executeMainProcess( string $type ) {
 			echo $html;
 			//Generate Pdf for butcher
 			Helper::generatePdf( $html, 'butcher' );
-			//Send mail to butcher
-			$db->sendToButcher( $butcherOrders,$type );
+
 		}
 		//generate dynamic html string for logistic order
 		$html = require_once( BASE_PATH . 'templates/invoice/invoice.php' );
 		echo $html;
 		//Generate Pdf for butcher
 		Helper::generatePdf( $html, 'logistics' );
-		if($type=='order')
-		{
-			$db->sendToLogistics( $orders ,$type);
+		if ( $type == 'order' ) {
+			$db->sendToLogistics( $orders, $type );
 		}
+		//Send mail to butcher
+		$db->sendToButcher( $butcherOrders, $type );
+
 		return $wooOrdersObjArray;
 	}
 }

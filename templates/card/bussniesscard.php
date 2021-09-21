@@ -65,12 +65,13 @@ ob_start();
         .card h2 {
             font-weight: 700 !important;
             line-height: 1;
+            font-size:13px;
         }
 
         .card span {
             display: block !important;
             font-weight: 500 !important;
-            font-size: 15px !important;
+            font-size: 10.5px !important;
             line-height: 1;
         }
 
@@ -104,10 +105,11 @@ ob_start();
             <div class="card <?php if( $counter != 1){echo "neechyaja";}?>">
 
                 <div class="text-box">
-                    <h2><?=$singleOrder['billing_fullname'];?></h2>
-                    <span><?=$singleOrder['billing_address_1'];?></span>
-                    <span><?=$singleOrder['billing_postcode'];?></span>
-                    <span><?=$singleOrder['billing_city'];?></span>
+
+                    <h2>Aissa Ghafoor</h2>
+                    <span>Admiraal de ruijterweg straat weg + 1056 HA 12/3</span>
+                    <span> 1069 WE</span>
+                    <span>Amsterdam</span>
 
                 </div>
 
