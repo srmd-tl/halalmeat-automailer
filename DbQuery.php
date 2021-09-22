@@ -5,17 +5,20 @@ require_once( BASE_PATH . 'Helper.php' );
  *
  */
 class DbQuery {
-	public function markComplete( array $ordersObj ) {
-		foreach ( $ordersObj as $order ) {
-			$order->update_status( 'completed' );
+	public function markComplete( array $ordersId ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix.'posts';
+		foreach ( $ordersId as $orderId ) {
+			$data_update = array('post_status' => 'wc-completed');
+			$data_where = array('ID' => $orderId);
+			$wpdb->update($table_name , $data_update, $data_where);
 		}
-		die();
 	}
 
 	/**
 	 * @param array $orders
 	 */
-	public function sendToLogistics( array $orders,string $orderType ) {
+	public function sendToLogistics( array $orders, string $orderType ) {
 		$settings = $this->getSetting();
 		//for logistics
 		$fileHeader = array(
@@ -38,7 +41,7 @@ class DbQuery {
 		//Send attachment
 		Helper::sendMail(
 			$settings && key_exists( 'logistics_email', $settings ) ? current( $settings['logistics_email'] ) : 'sarmadking@gmail.com',
-			'Logistics', 'logistics',$orderType );
+			'Logistics', 'logistics', $orderType );
 	}
 
 	/**
@@ -107,7 +110,7 @@ class DbQuery {
 	/**
 	 * @param array $orders
 	 */
-	public function sendToButcher( array $orders,string $orderType ) {
+	public function sendToButcher( array $orders, string $orderType ) {
 		$settings = $this->getSetting();
 		//for butcher
 		$fileHeader = array(
@@ -119,7 +122,7 @@ class DbQuery {
 		//Send attachment
 		Helper::sendMail(
 			$settings && key_exists( 'butcher_email', $settings ) ? current( $settings['butcher_email'] ) : 'sarmadking@gmail.com'
-			, 'ROCKY', 'butcher' ,$orderType);
+			, 'ROCKY', 'butcher', $orderType );
 	}
 
 	/**
@@ -133,7 +136,10 @@ class DbQuery {
 			foreach ( $order->get_items() as $item_id => $item ) {
 
 				if ( array_key_exists( $item->get_name(), $data ) ) {
-					$data[ $item->get_name() ] = [ $item->get_name(), ( (int) $data[ $item->get_name() ][1] ) +  $item->get_quantity() ];
+					$data[ $item->get_name() ] = [
+						$item->get_name(),
+						( (int) $data[ $item->get_name() ][1] ) + $item->get_quantity()
+					];
 				} else {
 					$data[ $item->get_name() ] = [ $item->get_name(), $item->get_quantity() ];
 				}
@@ -161,14 +167,16 @@ class DbQuery {
 	/**
 	 * @param array $wooOrdersObjArray
 	 * @param array $orders
+	 * @param array $orderIds
 	 * @param string $type
 	 */
-	public function getAllOrders( array &$wooOrdersObjArray, array &$orders, string $type ) {
+	public function getAllOrders( array &$wooOrdersObjArray, array &$orders, array &$orderIds, string $type ) {
 		$orderPosts = $this->getOrders( $type );
 		foreach ( $orderPosts as $orderPost ) {
 			$wooOrderObj         = wc_get_order( $orderPost->ID );
 			$wooOrdersObjArray[] = $wooOrderObj;
 			$orders[]            = $this->getOrderDetail( $wooOrderObj );
+			$orderIds[]          = $orderPost->ID;
 		}
 	}
 
@@ -205,6 +213,7 @@ class DbQuery {
 			);
 		}
 		$query = new WP_Query( $args );
+
 		return $query->posts;
 	}
 
