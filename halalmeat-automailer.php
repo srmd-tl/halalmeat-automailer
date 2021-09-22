@@ -125,8 +125,10 @@ function lets_do_magic() {
 			echo "post time";
 			$mainProcessOrders = executeMainProcess( 'order' );
 			if ( $mainProcessOrders ) {
+
 				$db->markComplete( $mainProcessOrders );
 			}
+			die();
 		}
 
 	}
@@ -136,11 +138,12 @@ function lets_do_magic() {
 }
 
 function executeMainProcess( string $type ) {
-	require_once BASE_PATH.'/DbQuery.php';
+	require_once BASE_PATH . '/DbQuery.php';
 	$orders            = [];
 	$wooOrdersObjArray = [];
+	$orderIds          = [];
 	$db                = new DbQuery();
-	$db->getAllOrders( $wooOrdersObjArray, $orders, $type );
+	$db->getAllOrders( $wooOrdersObjArray, $orders, $orderIds, $type );
 	if ( $wooOrdersObjArray ) {
 		//Get orders array for butcher
 		$butcherOrders = $db->getOrderProductsForButcher( $wooOrdersObjArray );
@@ -163,7 +166,7 @@ function executeMainProcess( string $type ) {
 		//Send mail to butcher
 		$db->sendToButcher( $butcherOrders, $type );
 
-		return $wooOrdersObjArray;
+		return $orderIds;
 	}
 }
 
