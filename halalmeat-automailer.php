@@ -102,7 +102,7 @@ function lets_do_magic() {
 	require_once( BASE_PATH . 'Helper.php' );
 	$db = new DbQuery();
 	if ( current( $db->getSetting()['test_mode'] ) ) {
-		executeMainProcess( 'pre_order' );
+		executeMainProcess( 'order' );
 	} else {
 		$currentTime = strtotime( Helper::getCurrentTime() );
 		var_dump( $currentTime );

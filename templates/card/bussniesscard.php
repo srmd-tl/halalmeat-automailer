@@ -37,7 +37,7 @@ ob_start();
         *,
         .card {
             font-family: "Montserrat", sans-serif;
-            text-align: center;
+            
             
         
         }
@@ -50,9 +50,7 @@ ob_start();
             width:89mm !important;
         }
         
-        /* .neechyaja {
-            page-break-before: always;
-        } */
+
         .text-box {
             width: 100%;
             display: table-cell;
@@ -63,6 +61,7 @@ ob_start();
             font-weight: 700 !important;
             line-height: 1;
             font-size:16px;
+            text-align: center;
         }
 
         .card span {
@@ -70,13 +69,9 @@ ob_start();
             font-weight: 500 !important;
             font-size: 12px !important;
             line-height: 1;
+            text-align: center;
         }
 
-        .card .logo img {
-            padding-top: 10px !important;
-        }
-
-        
 
 
     </style>
