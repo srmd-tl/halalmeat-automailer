@@ -5,6 +5,27 @@ require_once( BASE_PATH . 'Helper.php' );
  *
  */
 class DbQuery {
+	public function findOrCreate(): bool {
+		$currentDate=date('Y-m-d');
+		$postTitle="sent_soft_order_to_butcher";
+		global $wpdb;
+		$results = $wpdb->get_results("SELECT ID FROM wp_posts where post_title = '{$postTitle}' and date(post_date) = '{$currentDate}'");
+		if($results)
+		{
+			return false;
+		}
+		else
+		{
+			$my_post = array(
+				'post_title'    => 'sent_soft_order_to_butcher',
+				'post_content'  => 'sent_soft_order_to_butcher',
+				'post_author'   => 1,
+				'post_type'=>'soft_order'
+			);
+			wp_insert_post($my_post);
+			return true;
+		}
+	}
 	public function markComplete( array $ordersId ) {
 		global $wpdb;
 		$table_name = $wpdb->prefix.'posts';
