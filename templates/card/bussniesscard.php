@@ -92,12 +92,10 @@ ob_start();
             <div class="card <?php if( $counter != 1){echo "neechyaja";}?>">
 
                 <div class="text-box">
-
-                    <h2>Aissa Ghafoor</h2>
-                    <span>Admiraal de ruijterweg straat weg + 1056 HA 12/3</span>
-                    <span> 1069 WE</span>
-                    <span>Amsterdam</span>
-
+                    <h2><?=$singleOrder['billing_fullname'];?></h2>
+                    <span><?=$singleOrder['billing_address_1'];?></span>
+                    <span><?=$singleOrder['billing_address_2'];?></span>
+                    <span><?=$singleOrder['billing_city'];?></span>
                 </div>
             </div>
 			<?php
