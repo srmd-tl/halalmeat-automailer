@@ -140,7 +140,9 @@ function executeMainProcess( string $type ) {
 	if ( $wooOrdersObjArray ) {
 		//Get orders array for butcher
 		$butcherOrders = $db->getOrderProductsForButcher( $wooOrdersObjArray );
+
 		if ( $butcherOrders ) {
+
 			//generate dynamic html string for butcher order
 			$html = require_once( BASE_PATH . 'templates/card/bussniesscard.php' );
 			echo $html;
