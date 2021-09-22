@@ -23,6 +23,7 @@ ob_start();
         <title>card</title>
     </head>
     <style>
+        
         * {
             margin: 0 !important;
             padding: 0 !important;
@@ -31,47 +32,43 @@ ob_start();
 
         @page {
             size: 89mm 36mm portrait !important;
-            margin-left: 20px !important;
         }
 
         *,
         .card {
             font-family: "Montserrat", sans-serif;
+            text-align: center;
+            
+        
         }
-
-        .neechyaja {
-            page-break-before: always;
-        }
-
-        .card {
-            margin: 5px !important;
-            border: 1px solid #000 !important;
-            padding: 8px !important;
-            /* padding: 28px 22px 28px 22px !important;
-			margin: 25px auto !important; */
-
-        }
-
-        .card::after,
-        .card::before {
+        .card
+        {
             display: table;
-            content: " ";
+            text-align: center;
+            padding-top:30px !important;
+            
+            width:89mm !important;
         }
-
-        .card::after {
-            clear: both;
+        
+        /* .neechyaja {
+            page-break-before: always;
+        } */
+        .text-box {
+            width: 100%;
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
         }
-
         .card h2 {
             font-weight: 700 !important;
             line-height: 1;
-            font-size:13px;
+            font-size:16px;
         }
 
         .card span {
             display: block !important;
             font-weight: 500 !important;
-            font-size: 10.5px !important;
+            font-size: 12px !important;
             line-height: 1;
         }
 
@@ -79,19 +76,9 @@ ob_start();
             padding-top: 10px !important;
         }
 
-        .text-box {
-            float: left;
-            width: 70%;
-        }
+        
 
-        .logo {
-            float: left;
-            width: 30%;
-        }
 
-        .logo img {
-            width: 100%;
-        }
     </style>
 
     <body>
@@ -110,11 +97,6 @@ ob_start();
                     <span>Admiraal de ruijterweg straat weg + 1056 HA 12/3</span>
                     <span> 1069 WE</span>
                     <span>Amsterdam</span>
-
-                </div>
-
-                <div class="logo">
-                    <img src="<?=$pathToLogo;?>" />
 
                 </div>
             </div>
