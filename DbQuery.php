@@ -188,6 +188,7 @@ class DbQuery {
 	public function getOrders( string $type ) {
 		$settings = $this->getSetting();
 		$liveMode = $settings && key_exists( 'test_mode', $settings ) && current( $settings['test_mode'] ) == null;
+		$testMode = $settings && key_exists( 'test_mode', $settings ) && current( $settings['test_mode'] ) == 'checked';
 		if ( $liveMode && in_array( strtolower( Helper::getCurrentDay() ), [ 'fri', 'tue' ] ) ) {
 			$args = array(
 				'post_type'      => 'shop_order',
@@ -204,7 +205,7 @@ class DbQuery {
 				$args['date_query']['after'] = Helper::afterDate( 3, $type );
 			}
 
-		} else {
+		} else if($testMode){
 			echo 'testing things';
 			$args = array(
 				'post_type'      => 'shop_order',
