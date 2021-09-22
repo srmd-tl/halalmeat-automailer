@@ -69,7 +69,7 @@ class Helper {
 //		$dompdf->setOptions( $options );
 		$dompdf->loadHtml( $html );
 		// (Optional) Setup the paper size and orientation
-		$dompdf->setPaper( 'A4','portrait' );
+		// $dompdf->setPaper( 'A4','portrait' );
 		// Render the HTML as PDF
 		$dompdf->render();
 		//return pdf as string

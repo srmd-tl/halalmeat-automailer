@@ -154,10 +154,10 @@ function executeMainProcess( string $type ) {
 		//Generate Pdf for butcher
 		Helper::generatePdf( $html, 'logistics' );
 		if ( $type == 'order' ) {
-			$db->sendToLogistics( $orders, $type );
+			// $db->sendToLogistics( $orders, $type );
 		}
 		//Send mail to butcher
-		$db->sendToButcher( $butcherOrders, $type );
+		// $db->sendToButcher( $butcherOrders, $type );
 
 		return $orderIds;
 	}

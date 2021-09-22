@@ -26,15 +26,19 @@ ob_start();
             box-sizing: border-box;
         }
         @page {
-            margin-top: 30px !important;
+            margin: 30px !important;
+            margin-bottom: 0px !important;
+            size: A4 !important;
         }
         .pdf {
             font-family: "Montserrat", sans-serif;
-            padding: 40px 0px 162px 0px;
-            width: 7.5in;
-            margin: 0px auto;
-            line-height: 1.5;
+            
+            display: table;
 
+        }
+        .pdf .tableCell
+        {
+            /* display: table-cell; */
         }
         .neechyaja
         {
@@ -155,75 +159,72 @@ ob_start();
 		$i++
     ?>
         <div class="pdf <?php if($i > 1){echo "neechyaja"; } ?>">
-            <div class="pdf__header">
-                <img class="pdf__col pdf__col_left" src="<?=$pathToLogo;?>" alt="Logo">
+            <div class="tableCell">
+                <div class="pdf__header">
+                    <img class="pdf__col pdf__col_left" src="<?=$pathToLogo;?>" alt="Logo">
 
-                <div class="pdf__col pdf__col_right">
-                    <h3 class="pdf__heading small">Halal Meat Express</h3>
-                    <p>Ingelandenweg 1 <br>
-                    1069 WE Amsterdam<br>
-                    KVK: 83679316<br>
-                    BTW: 862955762B01<br>
-                    Klantenservice@halalmeatexpress.nl</p>
-                </div>
-            </div>
-
-            <h2 class="pdf__heading big">Pakbon</h2>
-
-            <div class="pdf__description">
-                <p class="pdf__col pdf__col_left">
-<!--                    Sarmad Sohail<br>-->
-<!--                    House no 317 Street Iqbal Hotel<br>-->
-<!--                    46000<br>-->
-<!--                    Rawalpindi <br>-->
-<!--                    031252213123-->
-
-					<?=$singleOrder->get_billing_first_name() . ' ' . $singleOrder->get_billing_last_name();?> <br>
-	                <?=$singleOrder->get_shipping_address_1() . ' ' . $singleOrder->get_shipping_address_2();?> <br>
-	                <?=$singleOrder->get_shipping_postcode()?> <br>
-                    <?=$singleOrder->get_shipping_city()?> <br>
-                    <?=$singleOrder->get_shipping_phone()?>
-                </p>
-                <p class="pdf__col pdf__col_right">
-                    Bestelnummer: <?=$singleOrder->get_order_number()?> <br>
-                    Besteldatum: <?=$singleOrder->get_date_created()->date('Y-m-d')?> <br>
-
-                </p>
-            </div>
-
-            <div class="pdf__table">
-                <div class="pdf__table_header">
-                    <div class="pdf__table_item pdf__heading small">Artikelnummer</div>
-                    <div class="pdf__table_product pdf__heading small">Product</div>
-                    <div class="pdf__table_amount pdf__heading small">Hoeveelheid</div>
-                </div>
-				<?php
-				foreach($singleOrder->get_items() as $item_id => $item )
-				{
-					$product = $item->get_product();
-					?>
-                    <div class="pdf__table_body">
-                        <div class="pdf__table_item">
-	                        <?=$product->get_sku()?><br>
-
-                        </div>
-                        <div class="pdf__table_product">
-	                        <?=$item->get_name()?> <br>
-                        </div>
-                        <div class="pdf__table_amount">
-							<?=$item->get_quantity();?>
-                        </div>
+                    <div class="pdf__col pdf__col_right">
+                        <h3 class="pdf__heading small">Halal Meat Express</h3>
+                        <p>Ingelandenweg 1 <br>
+                        1069 WE Amsterdam<br>
+                        KVK: 83679316<br>
+                        BTW: 862955762B01<br>
+                        Klantenservice@halalmeatexpress.nl</p>
                     </div>
-					<?php
-				}
-				?>
-            </div>
-            <div class="pdf__price">
-                <h3>Totaal aantal</h3>
-                <p><?=$singleOrder->get_total()?></p>
-            </div>
-            <div class="pdf__footer">
-                Op alle overeenkomsten tussen u en Halal Meat Express B.V. zijn de algemene voorwaarden van toepassing, zie www.halalmeatexpress.nl/algemene-voorwaarden.
+                </div>
+
+                <h2 class="pdf__heading big">Pakbon</h2>
+
+                <div class="pdf__description">
+                    <p class="pdf__col pdf__col_left">
+
+                        <?=$singleOrder->get_billing_first_name() . ' ' . $singleOrder->get_billing_last_name();?> <br>
+                        <?=$singleOrder->get_shipping_address_1() . ' ' . $singleOrder->get_shipping_address_2();?> <br>
+                        <?=$singleOrder->get_shipping_postcode()?> <br>
+                        <?=$singleOrder->get_shipping_city()?> <br>
+                        <?=$singleOrder->get_shipping_phone()?>
+                    </p>
+                    <p class="pdf__col pdf__col_right">
+                        Bestelnummer: <?=$singleOrder->get_order_number()?> <br>
+                        Besteldatum: <?=$singleOrder->get_date_created()->date('Y-m-d')?> <br>
+
+                    </p>
+                </div>
+
+                <div class="pdf__table">
+                    <div class="pdf__table_header">
+                        <div class="pdf__table_item pdf__heading small">Artikelnummer</div>
+                        <div class="pdf__table_product pdf__heading small">Product</div>
+                        <div class="pdf__table_amount pdf__heading small">Hoeveelheid</div>
+                    </div>
+                    <?php
+                    foreach($singleOrder->get_items() as $item_id => $item )
+                    {
+                        $product = $item->get_product();
+                        ?>
+                        <div class="pdf__table_body">
+                            <div class="pdf__table_item">
+                                <?=$product->get_sku()?><br>
+
+                            </div>
+                            <div class="pdf__table_product">
+                                <?=$item->get_name()?> <br>
+                            </div>
+                            <div class="pdf__table_amount">
+                                <?=$item->get_quantity();?>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+                <div class="pdf__price">
+                    <h3>Totaal aantal</h3>
+                    <p><?=$singleOrder->get_total()?></p>
+                </div>
+                <div class="pdf__footer">
+                    Op alle overeenkomsten tussen u en Halal Meat Express B.V. zijn de algemene voorwaarden van toepassing, zie www.halalmeatexpress.nl/algemene-voorwaarden.
+                </div>
             </div>
         </div>
 		<?php
