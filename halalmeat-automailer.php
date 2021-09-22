@@ -1,7 +1,4 @@
 <?php
-// Start new or resume existing session.
-session_start();
-
 ini_set( 'display_errors', 1 );
 ini_set( 'display_startup_errors', 1 );
 error_reporting( E_ALL );
@@ -110,16 +107,12 @@ function lets_do_magic() {
 		if (
 			( $currentTime > strtotime( current( $db->getSetting()['preorder_time'] ) . ':00' ) )
 			&& $currentTime < strtotime( current( $db->getSetting()['order_time'] ) . ':00' ) ) {
-//			$new_post = array(
-//				'post_title'  => 'Draft title',
-//				'post_status' => 'draft',
-//				'post_type'   => 'hm_automailer'
-//			);
-//			$postId   = wp_insert_post( $new_post );
 			echo "pre time";
 			if ( ! key_exists( 'pretime', $_SESSION ) || $_SESSION['pretime'] != Helper::getCurrentDate() ) {
-				executeMainProcess( 'pre_order' );
-				$_SESSION['pretime'] = Helper::getCurrentDate(); // string
+				if($db->findOrCreate())
+				{
+					executeMainProcess( 'pre_order' );
+				}
 			}
 		} else if ( $currentTime > strtotime( current( $db->getSetting()['order_time'] ) . ':00' ) ) {
 			echo "post time";
