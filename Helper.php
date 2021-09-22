@@ -97,7 +97,7 @@ class Helper {
 		$emailFromName = $settings&&key_exists('sender_name',$settings)?current($settings['sender_name']):"Sarmad Sohail";
 		$mail          = new PHPMailer;
 		$mail->isSMTP();
-		$mail->SMTPDebug  = 2; // 0 = off (for production use) - 1 = client messages - 2 = client and server messages
+		$mail->SMTPDebug  = 0; // 0 = off (for production use) - 1 = client messages - 2 = client and server messages
 		$mail->Host       = $settings&&key_exists('smtp_host',$settings)?current($settings['smtp_host']):"smtp.gmail.com"; // use $mail->Host = gethostbyname('smtp.gmail.com'); // if your network does not support SMTP over IPv6
 		$mail->Port       = $settings&&key_exists('smtp_port',$settings)?current($settings['smtp_port']):587; // TLS only
 		$mail->SMTPSecure = $settings&&key_exists('smtp_security',$settings)?current($settings['smtp_security']):'tls'; // ssl is depracated
