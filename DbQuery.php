@@ -235,7 +235,6 @@ class DbQuery {
 			);
 		}
 		$query = new WP_Query( $args );
-
 		return $query->posts;
 	}
 

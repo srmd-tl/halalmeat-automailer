@@ -2,8 +2,8 @@
 ini_set( 'display_errors', 1 );
 ini_set( 'display_startup_errors', 1 );
 error_reporting( E_ALL );
-date_default_timezone_set( "Europe/Amsterdam" );
-//date_default_timezone_set( "Asia/Karachi" );
+//date_default_timezone_set( "Europe/Amsterdam" );
+date_default_timezone_set( "Asia/Karachi" );
 
 /**
  * Plugin Name
@@ -108,11 +108,9 @@ function lets_do_magic() {
 			( $currentTime > strtotime( current( $db->getSetting()['preorder_time'] ) . ':00' ) )
 			&& $currentTime < strtotime( current( $db->getSetting()['order_time'] ) . ':00' ) ) {
 			echo "pre time";
-			if ( ! key_exists( 'pretime', $_SESSION ) || $_SESSION['pretime'] != Helper::getCurrentDate() ) {
-				if($db->findOrCreate())
-				{
-					executeMainProcess( 'pre_order' );
-				}
+
+			if ( $db->findOrCreate() ) {
+				executeMainProcess( 'pre_order' );
 			}
 		} else if ( $currentTime > strtotime( current( $db->getSetting()['order_time'] ) . ':00' ) ) {
 			echo "post time";
