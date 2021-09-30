@@ -28,7 +28,7 @@ class DbQuery {
 	}
 	public function findOrCreateOrderPost(): bool {
 		$currentDate=date('Y-m-d');
-		$postTitle="sent_soft_order_to_butcher";
+		$postTitle="sent_order_to_both";
 		global $wpdb;
 		$results = $wpdb->get_results("SELECT ID FROM wp_posts where post_title = '{$postTitle}' and date(post_date) = '{$currentDate}'");
 		if($results)
