@@ -323,8 +323,8 @@ class DbQuery {
 		$fountPost = post_exists( $post['post_title'], '', '', $post['post_type'] );
 		// Insert the post into the database.
 		$postId = $fountPost ?: wp_insert_post( $post );
-		update_post_meta( $postId, 'butcher_email', sanitize_email( $butcherEmail ) );
-		update_post_meta( $postId, 'logistics_email', sanitize_email( $logisticsEmail ) );
+		update_post_meta( $postId, 'butcher_email', ( $butcherEmail ) );
+		update_post_meta( $postId, 'logistics_email', ( $logisticsEmail ) );
 	}
 
 	/**

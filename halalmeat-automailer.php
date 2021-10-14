@@ -113,7 +113,7 @@ function lets_do_magic() {
 				executeMainProcess( 'pre_order' );
 			}
 		}
-		else if($db->findOrCreateOrderPost()&& (  $currentTime > strtotime( current( $db->getSetting()['order_time'] ) . ':00' ) ) ){
+		else if((  $currentTime > strtotime( current( $db->getSetting()['order_time'] ) . ':00' ) ) && $db->findOrCreateOrderPost() ){
 			echo "post time";
 			$mainProcessOrders = executeMainProcess( 'order' );
 			if ( $mainProcessOrders ) {

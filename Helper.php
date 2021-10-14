@@ -88,6 +88,7 @@ class Helper {
 	 * @throws Exception
 	 */
 	public static function sendMail( string $emailTo, string $emailToName, string $type,string $orderType ) {
+
 		$db=new DbQuery();
 		$settings=$db->getSetting();
 		$smtpUsername = $settings&&key_exists('smtp_username',$settings)?current($settings['smtp_username']):"esookhlinknbit@gmail.com";
@@ -105,7 +106,13 @@ class Helper {
 		$mail->Username   = $smtpUsername;
 		$mail->Password   = $smtpPassword;
 		$mail->setFrom( $emailFrom, $emailFromName );
-		$mail->addAddress( $emailTo, $emailToName );
+		$toEmails = explode(',',$emailTo);
+		$emailToName=explode(',',$emailToName);
+		for($i=0;$i<count($toEmails);$i++)
+		{
+			$mail->addAddress( $toEmails[$i], $emailToName[$i] );
+		}
+
 		$mail->Subject = 'Order details';
 		$mail->msgHTML( "Order details" ); //$mail->msgHTML(file_get_contents('contents.html'), __DIR__); //Read an HTML message body from an external file, convert referenced images to embedded,
 		$mail->AltBody = 'HTML messaging not supported';

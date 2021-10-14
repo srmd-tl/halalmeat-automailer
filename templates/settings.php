@@ -58,12 +58,12 @@ $data = $db->getSetting();
             <!--Emails-->
             <div class="form-group">
                 <label for="email">Butcher:</label>
-                <input type="email" class="form-control" id="butcher_email" placeholder="Enter butcher email"
+                <input type="text" class="form-control" id="butcher_email" placeholder="Enter butcher email"
                        name="butcher_email" value="<?= $data ? current( $data['butcher_email'] ) : null ?>">
             </div>
             <div class="form-group">
                 <label for="pwd">Logistics:</label>
-                <input type="email" class="form-control" id="logistics_email" placeholder="Enter logistics email"
+                <input type="text" class="form-control" id="logistics_email" placeholder="Enter logistics email"
                        name="logistics_email" value="<?= $data ? current( $data['logistics_email'] ) : null ?>">
             </div>
             <!--Sender info-->
