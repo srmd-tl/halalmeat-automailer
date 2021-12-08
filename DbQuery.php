@@ -6,54 +6,52 @@ require_once( BASE_PATH . 'Helper.php' );
  */
 class DbQuery {
 	public function findOrCreate(): bool {
-		$currentDate=date('Y-m-d');
-		$postTitle="sent_soft_order_to_butcher";
+		$currentDate = date( 'Y-m-d' );
+		$postTitle   = "sent_soft_order_to_butcher";
 		global $wpdb;
-		$results = $wpdb->get_results("SELECT ID FROM wp_posts where post_title = '{$postTitle}' and date(post_date) = '{$currentDate}'");
-		if($results)
-		{
+		$results = $wpdb->get_results( "SELECT ID FROM wp_posts where post_title = '{$postTitle}' and date(post_date) = '{$currentDate}'" );
+		if ( $results ) {
 			return false;
-		}
-		else
-		{
+		} else {
 			$my_post = array(
-				'post_title'    => 'sent_soft_order_to_butcher',
-				'post_content'  => 'sent_soft_order_to_butcher',
-				'post_author'   => 1,
-				'post_type'=>'soft_order'
+				'post_title'   => 'sent_soft_order_to_butcher',
+				'post_content' => 'sent_soft_order_to_butcher',
+				'post_author'  => 1,
+				'post_type'    => 'soft_order'
 			);
-			wp_insert_post($my_post);
+			wp_insert_post( $my_post );
+
 			return true;
 		}
 	}
+
 	public function findOrCreateOrderPost(): bool {
-		$currentDate=date('Y-m-d');
-		$postTitle="sent_order_to_both";
+		$currentDate = date( 'Y-m-d' );
+		$postTitle   = "sent_order_to_both";
 		global $wpdb;
-		$results = $wpdb->get_results("SELECT ID FROM wp_posts where post_title = '{$postTitle}' and date(post_date) = '{$currentDate}'");
-		if($results)
-		{
+		$results = $wpdb->get_results( "SELECT ID FROM wp_posts where post_title = '{$postTitle}' and date(post_date) = '{$currentDate}'" );
+		if ( $results ) {
 			return false;
-		}
-		else
-		{
+		} else {
 			$my_post = array(
-				'post_title'    => 'sent_order_to_both',
-				'post_content'  => 'sent_order_to_both',
-				'post_author'   => 1,
-				'post_type'=>'both_order'
+				'post_title'   => 'sent_order_to_both',
+				'post_content' => 'sent_order_to_both',
+				'post_author'  => 1,
+				'post_type'    => 'both_order'
 			);
-			wp_insert_post($my_post);
+			wp_insert_post( $my_post );
+
 			return true;
 		}
 	}
+
 	public function markComplete( array $ordersId ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix.'posts';
+		$table_name = $wpdb->prefix . 'posts';
 		foreach ( $ordersId as $orderId ) {
-			$data_update = array('post_status' => 'wc-completed');
-			$data_where = array('ID' => $orderId);
-			$wpdb->update($table_name , $data_update, $data_where);
+			$data_update = array( 'post_status' => 'wc-completed' );
+			$data_where  = array( 'ID' => $orderId );
+			$wpdb->update( $table_name, $data_update, $data_where );
 		}
 	}
 
@@ -173,37 +171,29 @@ class DbQuery {
 	 * @return array
 	 */
 	public function getOrderProductsForButcher( $orders ): array {
-		$data = [];
+		$data     = [];
+		$finalArr = [];
 		foreach ( $orders as $order ) {
 			foreach ( $order->get_items() as $item_id => $item ) {
+				$category = current( get_the_terms( $item->get_product_id(), 'product_cat' ) )->name;
 
-				if ( array_key_exists( $item->get_name(), $data ) ) {
-					$data[ $item->get_name() ] = [
+				if ( array_key_exists( $category, $data ) && array_key_exists( $item->get_name(), $data[ $category ] ) ) {
+					$data[ $category ][ $item->get_name() ] = [
 						$item->get_name(),
-						( (int) $data[ $item->get_name() ][1] ) + $item->get_quantity()
+						( (int) $data[ $category ][ $item->get_name() ][1] ) + $item->get_quantity()
 					];
 				} else {
-					$data[ $item->get_name() ] = [ $item->get_name(), $item->get_quantity() ];
+					$data[ $category ][ $item->get_name() ] = [ $item->get_name(), $item->get_quantity() ];
 				}
-//				$product_id   = $item->get_product_id();
-//				$variation_id = $item->get_variation_id();
-//				$product      = $item->get_product();
-//				$name         = $item->get_name();
-//				$quantity     = $item->get_quantity();
-//				$subtotal     = $item->get_subtotal();
-//				$total        = $item->get_total();
-//				$tax          = $item->get_subtotal_tax();
-//				$taxclass     = $item->get_tax_class();
-//				$taxstat      = $item->get_tax_status();
-//				$allmeta      = $item->get_meta_data();
-//				$somemeta     = $item->get_meta( '_whatever', true );
-//				$type         = $item->get_type();
 			}
 		}
-
-		return $data;
-
-
+		if ( $data ) {
+			foreach ( $data as $key => $value ) {
+				$finalArr[ $key ] = [ strtoupper($key) ];
+				$finalArr         += $value;
+			}
+		}
+		return $finalArr;
 	}
 
 	/**
@@ -231,7 +221,7 @@ class DbQuery {
 		$settings = $this->getSetting();
 		$liveMode = $settings && key_exists( 'test_mode', $settings ) && current( $settings['test_mode'] ) == null;
 		$testMode = $settings && key_exists( 'test_mode', $settings ) && current( $settings['test_mode'] ) == 'checked';
-		if ( $liveMode && in_array( strtolower( Helper::getCurrentDay() ), [ 'fri', 'tue' ] ) ) {
+		if ( $liveMode && in_array( strtolower( Helper::getCurrentDay() ), [ 'mon', 'thu' ] ) ) {
 			$args = array(
 				'post_type'      => 'shop_order',
 				'posts_per_page' => '10000',
@@ -241,13 +231,13 @@ class DbQuery {
 					'before' => date( "Y-m-d H:i:s" )
 				),
 			);
-			if ( Helper::getCurrentDay() == 'Tue' ) {
-				$args['date_query']['after'] = Helper::afterDate( 4, $type );
-			} else if ( Helper::getCurrentDay() == 'Fri' ) {
-				$args['date_query']['after'] = Helper::afterDate( 3, $type );
+			if ( Helper::getCurrentDay() == 'Mon' ) {
+				$args['date_query']['after'] = Helper::afterDate( 5, $type );
+			} else if ( Helper::getCurrentDay() == 'Thu' ) {
+				$args['date_query']['after'] = Helper::afterDate( 5, $type );
 			}
 
-		} else if($testMode){
+		} else if ( $testMode ) {
 			echo 'testing things';
 			$args = array(
 				'post_type'      => 'shop_order',
@@ -256,6 +246,7 @@ class DbQuery {
 			);
 		}
 		$query = new WP_Query( $args );
+
 		return $query->posts;
 	}
 
@@ -265,6 +256,8 @@ class DbQuery {
 	 * @return array
 	 */
 	public function getOrderDetail( $order ) {
+		$street = current( get_post_meta( $order->get_id(), '_billing_huisnummer' ) );
+
 		return array(
 //                    'order_id' => $order->get_id(),
 //                    'order_number' => $order->get_order_number(),
@@ -298,7 +291,7 @@ class DbQuery {
 			'billing_email'     => $order->get_billing_email(),
 			'billing_phone'     => $order->get_billing_phone(),
 			'billing_address_1' => $order->get_billing_address_1(),
-			'billing_address_2' => $order->get_billing_address_2(),
+			'billing_address_2' => $street,
 			'billing_postcode'  => $order->get_billing_postcode(),
 			'billing_city'      => $order->get_billing_city(),
 			'billing_state'     => $order->get_billing_state(),

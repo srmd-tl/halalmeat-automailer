@@ -1,9 +1,10 @@
 <?php
-ini_set( 'display_errors', 1 );
-ini_set( 'display_startup_errors', 1 );
-error_reporting( E_ALL );
-//date_default_timezone_set( "Europe/Amsterdam" );
-date_default_timezone_set( "Asia/Karachi" );
+
+// ini_set( 'display_errors', 1 );
+// ini_set( 'display_startup_errors', 1 );
+// error_reporting( E_ALL );
+date_default_timezone_set( "Europe/Amsterdam" );
+//date_default_timezone_set( "Asia/Karachi" );
 
 /**
  * Plugin Name
@@ -46,6 +47,7 @@ function halalmeat_automailer_register_my_custom_menu_page() {
 
 //halalmeat-automailer_test_mail to test mail
 function halalmeat_automailer_test_mail() {
+	
 	lets_do_magic();
 }
 
@@ -73,11 +75,11 @@ function on_halalmeat_automailer_init() {
 			require_once BASE_PATH . 'Helper.php';
 			require_once BASE_PATH . 'DbQuery.php';
 			$db = new DbQuery();
-			if ( in_array( strtolower( Helper::getCurrentDay() ), [ 'fri', 'tue' ] ) ) {
+			if ( in_array( strtolower( Helper::getCurrentDay() ), [ 'thu', 'mon' ] ) ) {
 				lets_do_magic();
 				echo "Job done";
 			} else {
-				echo "You can only send email on tuesday and friday";
+				echo "You can only send email on thursday and monday";
 			}
 			die();
 		}
@@ -99,7 +101,7 @@ function lets_do_magic() {
 	require_once( BASE_PATH . 'Helper.php' );
 	$db = new DbQuery();
 	if ( current( $db->getSetting()['test_mode'] ) ) {
-		executeMainProcess( 'order' );
+		executeMainProcess( 'pre_order' );
 	} else {
 		$currentTime = strtotime( Helper::getCurrentTime() );
 		var_dump( $currentTime );
@@ -108,12 +110,14 @@ function lets_do_magic() {
 			( $currentTime > strtotime( current( $db->getSetting()['preorder_time'] ) . ':00' ) )
 			&& $currentTime < strtotime( current( $db->getSetting()['order_time'] ) . ':00' ) ) {
 			echo "pre time";
-
+                        
 			if ( $db->findOrCreate() ) {
 				executeMainProcess( 'pre_order' );
 			}
 		}
 		else if((  $currentTime > strtotime( current( $db->getSetting()['order_time'] ) . ':00' ) ) && $db->findOrCreateOrderPost() ){
+
+
 			echo "post time";
 			$mainProcessOrders = executeMainProcess( 'order' );
 			if ( $mainProcessOrders ) {
@@ -128,7 +132,6 @@ function lets_do_magic() {
 	//send order details to logistics members
 //	$db->sendToLogistics( $orders );
 }
-
 function executeMainProcess( string $type ) {
 	require_once BASE_PATH . '/DbQuery.php';
 	$orders            = [];
@@ -139,7 +142,6 @@ function executeMainProcess( string $type ) {
 	if ( $wooOrdersObjArray ) {
 		//Get orders array for butcher
 		$butcherOrders = $db->getOrderProductsForButcher( $wooOrdersObjArray );
-
 		if ( $butcherOrders ) {
 
 			//generate dynamic html string for butcher order
@@ -164,7 +166,7 @@ function executeMainProcess( string $type ) {
 	}
 }
 
-// Add your custom order status action button (for orders with "processing" status)
+// Add your custom order status action button ( orders with "processing" status)
 add_filter( 'woocommerce_admin_order_actions', 'add_custom_order_status_actions_button', 100, 2 );
 function add_custom_order_status_actions_button( $actions, $order ) {
 	require_once BASE_PATH . 'Helper.php';
@@ -178,8 +180,8 @@ function add_custom_order_status_actions_button( $actions, $order ) {
 		// Set the action button
 		$orderTime = current( $db->getSetting()['order_time'] );
 		if ( in_array( strtolower( Helper::getCurrentDay() ), [
-				'fri',
-				'tue'
+				'thu',
+				'mon'
 			] ) && Helper::getCurrentTime() <= $orderTime ) {
 			$actions['send_manual_mail'] = array(
 				'url'    => admin_url( 'admin.php?action=send_manual_mail&order_id=' . $order_id ),

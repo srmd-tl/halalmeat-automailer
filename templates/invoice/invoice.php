@@ -177,9 +177,11 @@ ob_start();
 
                 <div class="pdf__description">
                     <p class="pdf__col pdf__col_left">
-
+                         <?php
+                        $street=current(get_post_meta($singleOrder->get_id(), '_billing_huisnummer'));
+                        ?>
                         <?=$singleOrder->get_billing_first_name() . ' ' . $singleOrder->get_billing_last_name();?> <br>
-                        <?=$singleOrder->get_shipping_address_1() . ' ' . $singleOrder->get_shipping_address_2();?> <br>
+                        <?=$singleOrder->get_shipping_address_1() . ' ' . $street;?> <br>
                         <?=$singleOrder->get_shipping_postcode()?> <br>
                         <?=$singleOrder->get_shipping_city()?> <br>
                         <?=$singleOrder->get_shipping_phone()?>
@@ -220,7 +222,7 @@ ob_start();
                 </div>
                 <div class="pdf__price">
                     <h3>Totaal aantal</h3>
-                    <p><?=$singleOrder->get_total()?></p>
+                    <p>€ <?=$singleOrder->get_total()?></p>
                 </div>
                 <div class="pdf__footer">
                     Op alle overeenkomsten tussen u en Halal Meat Express B.V. zijn de algemene voorwaarden van toepassing, zie www.halalmeatexpress.nl/algemene-voorwaarden.
